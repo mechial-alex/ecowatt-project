@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoWatt | Smart Energy & Solar Load Optimizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-main: #f4f9f6;
+      --bg-card: #ffffff;
+      --primary: #059669;
+      --primary-dark: #064e3b;
+      --primary-light: #d1fae5;
+      --accent: #d97706;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --radius: 14px;
+      --shadow: 0 4px 20px rgba(6, 78, 59, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, h4, .brand {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Navigation Bar */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      text-decoration: none;
+    }
+
+    .brand i {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    .nav-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .sdg-badge-header {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .tab-section {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Simulation Disclaimer Banner */
+    .sim-banner {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 0.75rem 1.2rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .sim-banner span strong {
+      color: #78350f;
+    }
+
+    /* Hero Section (Home) */
+    .hero {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 3.5rem 3rem;
+      margin-bottom: 2.5rem;
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 2rem;
+      align-items: center;
+      box-shadow: 0 12px 30px rgba(6, 78, 59, 0.18);
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      color: #a7f3d0;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: 2.6rem;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      color: #d1fae5;
+      font-size: 1.1rem;
+      margin-bottom: 1.8rem;
+      max-width: 620px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: #10b981;
+      color: #064e3b;
+    }
+
+    .btn-primary:hover {
+      background: #34d399;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.24);
+    }
+
+    .btn-green {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-green:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background: #f1f5f9;
+    }
+
+    .hero-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 1.8rem;
+    }
+
+    .hero-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+      color: #a7f3d0;
+    }
+
+    .sdg-item {
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .sdg-num {
+      background: #10b981;
+      color: #064e3b;
+      font-weight: 800;
+      padding: 0.35rem 0.65rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    /* Grid Layouts */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+
+    .kpi-header i {
+      font-size: 1.2rem;
+      color: var(--primary);
+      background: #ecfdf5;
+      padding: 0.55rem;
+      border-radius: 10px;
+    }
+
+    .kpi-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .kpi-sub {
+      font-size: 0.84rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-top: 0.45rem;
+    }
+
+    /* Forms & Tables */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background: #ffffff;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    th, td {
+      padding: 0.85rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge {
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .badge-good { background: #d1fae5; color: #065f46; }
+    .badge-warn { background: #fef3c7; color: #92400e; }
+    .badge-bad  { background: #fee2e2; color: #991b1b; }
+
+    .del-btn {
+      background: #fee2e2;
+      color: #dc2626;
+      border: none;
+      padding: 0.4rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .del-btn:hover {
+      background: #fecaca;
+    }
+
+    /* Chart Containers */
+    .chart-box {
+      position: relative;
+      height: 310px;
+      width: 100%;
+    }
+
+    /* Sliders */
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .result-highlight {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .formula-box {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 10px 10px 0;
+      font-family: monospace;
+      font-size: 0.95rem;
+      margin: 0.75rem 0;
+      color: #0f172a;
+    }
+
+    .rec-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      margin-bottom: 0.85rem;
+    }
+
+    .rec-item i {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-top: 0.2rem;
+    }
+
+    /* Accordion for Viva / Docs */
+    details {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.85rem;
+    }
+
+    summary {
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--primary-dark);
+      font-size: 1.02rem;
+    }
+
+    details p, details ul {
+      margin-top: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    details ul {
+      padding-left: 1.4rem;
+    }
+
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 2.2rem 1.75rem;
+      }
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVIGATION -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand" onclick="switchTab('home'); return false;">
+        <i class="fa-solid fa-leaf"></i>
+        <span>EcoWatt</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">Home &amp; Overview</button>
+        <button class="nav-btn" data-tab="dashboard" onclick="switchTab('dashboard')">Energy Dashboard</button>
+        <button class="nav-btn" data-tab="pf" onclick="switchTab('pf')">PF &amp; Capacitor Sizing</button>
+        <button class="nav-btn" data-tab="solar" onclick="switchTab('solar')">Solar PV &amp; CO₂</button>
+        <button class="nav-btn" data-tab="docs" onclick="switchTab('docs')">EE Formulas &amp; Docs</button>
+      </nav>
+
+      <div class="sdg-badge-header">
+        <i class="fa-solid fa-globe"></i> UN SDG 7 &amp; SDG 13
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- TRANSPARENCY & SIMULATION NOTICE -->
+    <div class="sim-banner">
+      <span>
+        <i class="fa-solid fa-flask"></i>
+        <strong>Academic Simulation Mode:</strong> Pre-loaded values represent a simulated BTech Electrical Engineering Lab load profile. Modify appliances, tariffs, or solar capacity live to compute deterministic engineering results.
+      </span>
+      <div style="display:flex; gap:0.5rem;">
+        <button class="btn btn-outline" style="padding:0.4rem 0.85rem; font-size:0.84rem;" onclick="loadPreset('campus')">
+          <i class="fa-solid fa-building-columns"></i> Campus Lab Preset
+        </button>
+        <button class="btn btn-outline" style="padding:0.4rem 0.85rem; font-size:0.84rem;" onclick="loadPreset('home')">
+          <i class="fa-solid fa-house"></i> Residential Preset
+        </button>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         TAB 1: HOME & PROJECT OVERVIEW
+         ========================================================= -->
+    <section id="tab-home" class="tab-section active">
+      <div class="hero">
+        <div>
+          <span class="hero-tag">BTech 2nd Year • Electrical Engineering Project</span>
+          <h1>Smart Energy Audit, Power Factor &amp; Solar Load Optimizer</h1>
+          <p>
+            A zero-hardware engineering web platform designed to analyze electrical load profiles, size reactive power compensation capacitors, model rooftop solar PV offsets, and reduce grid carbon emissions.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="switchTab('dashboard')">
+              <i class="fa-solid fa-gauge-high"></i> Launch Interactive Dashboard
+            </button>
+            <button class="btn btn-secondary" onclick="switchTab('docs')">
+              <i class="fa-solid fa-book-open"></i> Engineering Formulas &amp; Viva Guide
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h3><i class="fa-solid fa-seedling"></i> Sustainable Development Alignment</h3>
+          <div class="sdg-item">
+            <span class="sdg-num">SDG 7</span>
+            <div>
+              <strong>Affordable &amp; Clean Energy</strong>
+              <p style="font-size:0.88rem; margin:0; color:#d1fae5;">Promotes rooftop solar PV integration and improves electrical energy efficiency (Target 7.3).</p>
+            </div>
+          </div>
+          <div class="sdg-item">
+            <span class="sdg-num">SDG 13</span>
+            <div>
+              <strong>Climate Action</strong>
+              <p style="font-size:0.88rem; margin:0; color:#d1fae5;">Quantifies fossil-fuel grid CO₂ reductions using India CEA emission factors (0.82 kg CO₂/kWh).</p>
+            </div>
+          </div>
+          <div class="sdg-item" style="margin-bottom:0;">
+            <span class="sdg-num">SDG 12</span>
+            <div>
+              <strong>Responsible Consumption</strong>
+              <p style="font-size:0.88rem; margin:0; color:#d1fae5;">Identifies phantom standby loads and reactive power losses in buildings.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Core Engineering Modules -->
+      <div class="grid-3">
+        <div class="card">
+          <div class="kpi-header">
+            <span>MODULE 01 • LOAD AUDIT</span>
+            <i class="fa-solid fa-plug-circle-bolt"></i>
+          </div>
+          <h3 style="margin-bottom:0.5rem;">Appliance &amp; Tariff Analyzer</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem;">
+            Add real-world electrical loads with wattage, quantity, duty hours, and power factor to compute daily/monthly kWh, apparent power (kVA), and electricity bills.
+          </p>
+          <button class="btn btn-green" style="width:100%; justify-content:center;" onclick="switchTab('dashboard')">Open Load Dashboard</button>
+        </div>
+
+        <div class="card">
+          <div class="kpi-header">
+            <span>MODULE 02 • REACTIVE POWER</span>
+            <i class="fa-solid fa-wave-square"></i>
+          </div>
+          <h3 style="margin-bottom:0.5rem;">Power Factor &amp; kVAR Sizing</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem;">
+            Calculates the exact shunt capacitor bank rating (kVAR) and capacitance (µF) required to improve lagging power factor from inductive motors and HVAC systems.
+          </p>
+          <button class="btn btn-green" style="width:100%; justify-content:center;" onclick="switchTab('pf')">Open PF Calculator</button>
+        </div>
+
+        <div class="card">
+          <div class="kpi-header">
+            <span>MODULE 03 • RENEWABLES</span>
+            <i class="fa-solid fa-solar-panel"></i>
+          </div>
+          <h3 style="margin-bottom:0.5rem;">Rooftop Solar &amp; Carbon Offset</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem;">
+            Simulates 24-hour solar generation curves against building demand, estimates net grid savings, payback period, and equivalent trees planted.
+          </p>
+          <button class="btn btn-green" style="width:100%; justify-content:center;" onclick="switchTab('solar')">Open Solar Simulator</button>
+        </div>
+      </div>
+
+      <!-- Environmental Benefits Overview -->
+      <div class="card">
+        <h3 style="margin-bottom:0.75rem;"><i class="fa-solid fa-earth-asia" style="color:var(--primary);"></i> Environmental &amp; Grid Sustainability Impact</h3>
+        <p style="color:var(--text-muted); margin-bottom:1rem;">
+          In thermal-dominated power grids, every 1 kWh of wasted electricity requires ~1.15 kWh of generation at the power plant due to transmission and distribution (T&amp;D) losses. By combining demand-side load scheduling, power factor correction (reducing line current <i>I</i> and <i>I²R</i> copper losses), and localized rooftop solar PV, buildings significantly relieve peak transformer stress and cut greenhouse gas emissions.
+        </p>
+        <div class="grid-3" style="margin-bottom:0;">
+          <div style="background:#f8fafc; padding:1rem; border-radius:10px;">
+            <strong style="color:var(--primary-dark);">0.82 kg CO₂ / kWh</strong>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Standard grid emission factor used for carbon footprint modeling.</p>
+          </div>
+          <div style="background:#f8fafc; padding:1rem; border-radius:10px;">
+            <strong style="color:var(--primary-dark);">Up to 18% Line Loss Drop</strong>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Improving PF from 0.78 to 0.98 cuts feeder current by ~20.4%.</p>
+          </div>
+          <div style="background:#f8fafc; padding:1rem; border-radius:10px;">
+            <strong style="color:var(--primary-dark);">21.7 kg CO₂ / Tree / Year</strong>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Benchmark used to translate annual carbon savings into tree equivalents.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         TAB 2: INTERACTIVE ENERGY DASHBOARD
+         ========================================================= -->
+    <section id="tab-dashboard" class="tab-section">
+      <!-- KPI Summary Cards -->
+      <div class="grid-4">
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span>TOTAL CONNECTED LOAD</span>
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div class="kpi-value" id="kpi-kw">0.00 kW</div>
+          <div class="kpi-sub" id="kpi-kva">Apparent Power: 0.00 kVA</div>
+        </div>
+
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span>MONTHLY ENERGY</span>
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div class="kpi-value" id="kpi-kwh">0 kWh</div>
+          <div class="kpi-sub" id="kpi-daily">Daily Avg: 0.0 kWh/day</div>
+        </div>
+
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span>ESTIMATED MONTHLY BILL</span>
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+          </div>
+          <div class="kpi-value" id="kpi-cost">₹0</div>
+          <div class="kpi-sub" id="kpi-tariff-label">At ₹7.50 / kWh tariff</div>
+        </div>
+
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span>CARBON EMISSIONS</span>
+            <i class="fa-solid fa-smog"></i>
+          </div>
+          <div class="kpi-value" id="kpi-co2">0 kg</div>
+          <div class="kpi-sub" id="kpi-pf-avg">Weighted Avg PF: 0.00</div>
+        </div>
+      </div>
+
+      <!-- Add Load Form & Tariff Controls -->
+      <div class="card" style="margin-bottom:2rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem;">
+          <div>
+            <h3><i class="fa-solid fa-plus-circle" style="color:var(--primary);"></i> Add Electrical Load / Appliance</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Enter equipment ratings to dynamically update all dashboard metrics and charts.</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.6rem; background:#f8fafc; padding:0.5rem 0.9rem; border-radius:10px; border:1px solid var(--border);">
+            <label for="tariff-input" style="font-size:0.88rem; font-weight:700;">Tariff (₹/kWh):</label>
+            <input type="number" id="tariff-input" value="7.5" step="0.5" min="1" max="30" style="width:75px; padding:0.35rem; border:1px solid #cbd5e1; border-radius:6px; font-weight:700;" onchange="recalculateAll()">
+          </div>
+        </div>
+
+        <form id="add-load-form" onsubmit="addAppliance(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="app-name">Appliance / Equipment</label>
+              <input type="text" id="app-name" placeholder="e.g., 1.5 Ton Split AC" required>
+            </div>
+            <div class="form-group">
+              <label for="app-category">Load Category</label>
+              <select id="app-category">
+                <option value="HVAC & Cooling">HVAC &amp; Cooling</option>
+                <option value="Motors & Lab">Motors &amp; Lab</option>
+                <option value="Lighting">Lighting</option>
+                <option value="IT & Computing">IT &amp; Computing</option>
+                <option value="Standby / Misc">Standby / Misc</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="app-watts">Rated Power (Watts)</label>
+              <input type="number" id="app-watts" placeholder="1500" min="1" max="100000" required>
+            </div>
+            <div class="form-group">
+              <label for="app-qty">Quantity</label>
+              <input type="number" id="app-qty" value="1" min="1" max="500" required>
+            </div>
+            <div class="form-group">
+              <label for="app-hours">Usage (Hours/Day)</label>
+              <input type="number" id="app-hours" value="6" step="0.5" min="0.5" max="24" required>
+            </div>
+            <div class="form-group">
+              <label for="app-pf">Power Factor (cos φ)</label>
+              <input type="number" id="app-pf" value="0.85" step="0.01" min="0.4" max="1.0" required>
+            </div>
+          </div>
+          <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-green">
+              <i class="fa-solid fa-plus"></i> Add to Load Audit
+            </button>
+            <button type="button" class="btn btn-outline" onclick="exportCSV()">
+              <i class="fa-solid fa-file-csv"></i> Export Audit CSV
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-bottom:0.35rem;">Energy Consumption by Category (kWh/Month)</h3>
+          <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1rem;">Identifies dominant energy-consuming subsystems.</p>
+          <div class="chart-box">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:0.35rem;">24-Hour Load Profile vs. Solar Generation</h3>
+          <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1rem;">Simulated hourly demand curve (kW) overlaid with rooftop PV output.</p>
+          <div class="chart-box">
+            <canvas id="hourlyChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appliance Table & Smart Recommendations -->
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-bottom:1rem;">Connected Load Inventory (30-Day Cycle)</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Appliance</th>
+                  <th>Qty × W</th>
+                  <th>Hrs/Day</th>
+                  <th>PF</th>
+                  <th>kWh/Mo</th>
+                  <th>Cost</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="appliance-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:0.4rem;"><i class="fa-solid fa-lightbulb" style="color:var(--accent);"></i> Automated EE Recommendations</h3>
+          <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">Rule-based diagnostics generated from your current load inventory:</p>
+          <div id="recommendations-list">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         TAB 3: POWER FACTOR CORRECTION & CAPACITOR SIZING
+         ========================================================= -->
+    <section id="tab-pf" class="tab-section">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="margin-bottom:0.5rem;">Power Factor Improvement Calculator</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1.5rem;">
+            Inductive loads (induction motors, fluorescent chokes, transformers) draw lagging reactive power (kVAR), increasing feeder current and incurring utility penalties. Adjust parameters below to size a shunt capacitor bank.
+          </p>
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label for="pf-kw-input">Active Load Power P (kW) — <em>Synced from Dashboard or Custom</em></label>
+            <input type="number" id="pf-kw-input" value="15.0" step="0.5" min="0.5" max="5000" oninput="calculatePF()">
+          </div>
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label>Existing Lagging Power Factor (cos φ₁): <strong id="pf1-display" style="color:var(--danger);">0.78</strong></label>
+            <input type="range" id="pf1-slider" min="0.55" max="0.95" step="0.01" value="0.78" oninput="calculatePF()">
+          </div>
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label>Target Power Factor (cos φ₂): <strong id="pf2-display" style="color:var(--primary);">0.98</strong></label>
+            <input type="range" id="pf2-slider" min="0.85" max="1.00" step="0.01" value="0.98" oninput="calculatePF()">
+          </div>
+
+          <div class="form-grid" style="margin-bottom:0;">
+            <div class="form-group">
+              <label for="sys-voltage">Line Voltage V (Volts)</label>
+              <select id="sys-voltage" onchange="calculatePF()">
+                <option value="415">415 V (3-Phase Industrial/Lab)</option>
+                <option value="230">230 V (1-Phase Domestic)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sys-freq">Supply Frequency f (Hz)</label>
+              <select id="sys-freq" onchange="calculatePF()">
+                <option value="50">50 Hz (India / Europe)</option>
+                <option value="60">60 Hz (North America)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="result-highlight">
+            <h4 style="color:var(--primary-dark); margin-bottom:0.75rem;">Capacitor Bank Design Output</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Required Reactive Compensation</span>
+                <div id="res-kvar" style="font-size:1.65rem; font-weight:700; color:var(--primary-dark); font-family:'Space Grotesk',sans-serif;">0.00 kVAR</div>
+              </div>
+              <div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Required Capacitance (Per Phase / Total)</span>
+                <div id="res-uf" style="font-size:1.65rem; font-weight:700; color:var(--accent); font-family:'Space Grotesk',sans-serif;">0.0 µF</div>
+              </div>
+              <div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Apparent Power Reduction</span>
+                <div id="res-kva-saved" style="font-size:1.15rem; font-weight:700; color:var(--text-main);">0.00 kVA saved</div>
+              </div>
+              <div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Line Current &amp; I²R Loss Drop</span>
+                <div id="res-loss-drop" style="font-size:1.15rem; font-weight:700; color:var(--primary);">0.0% lower copper loss</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:0.35rem;">Power Triangle Comparison (kW, kVAR, kVA)</h3>
+          <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1rem;">Visualizing reactive power (Q) and apparent power (S) before vs. after capacitor bank installation.</p>
+          <div class="chart-box">
+            <canvas id="pfChart"></canvas>
+          </div>
+          <div class="formula-box" style="margin-top:1.25rem;">
+            <strong>Governing Electrical Equations:</strong><br>
+            Q<sub>c</sub> = P × (tan φ₁ − tan φ₂) &nbsp;[kVAR]<br>
+            C = (Q<sub>c</sub> × 10⁹) / (2π × f × V²) &nbsp;[µF for 1-Phase / Delta]
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         TAB 4: ROOFTOP SOLAR PV & CARBON OFFSET SIMULATOR
+         ========================================================= -->
+    <section id="tab-solar" class="tab-section">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="margin-bottom:0.5rem;">Rooftop Solar PV &amp; Sustainability Simulator</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1.5rem;">
+            Configure a grid-tied rooftop solar photovoltaic system to evaluate how much of your dashboard energy consumption can be offset cleanly.
+          </p>
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label>Solar PV System Capacity: <strong id="solar-kw-display" style="color:var(--primary);">5.0 kWp</strong></label>
+            <input type="range" id="solar-kw-slider" min="1" max="50" step="0.5" value="5" oninput="calculateSolar()">
+          </div>
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label>Peak Sun Hours (PSH / Day): <strong id="solar-psh-display">5.2 hrs/day</strong></label>
+            <input type="range" id="solar-psh-slider" min="3.0" max="7.0" step="0.1" value="5.2" oninput="calculateSolar()">
+          </div>
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label>System Performance Ratio (Inverter + Temp Losses): <strong id="solar-pr-display">80%</strong></label>
+            <input type="range" id="solar-pr-slider" min="0.70" max="0.90" step="0.01" value="0.80" oninput="calculateSolar()">
+          </div>
+
+          <div class="result-highlight">
+            <h4 style="color:var(--primary-dark); margin-bottom:0.75rem;">Solar Yield &amp; Environmental Impact</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Monthly Solar Generation</span>
+                <div id="solar-monthly-kwh" style="font-size:1.55rem; font-weight:700; color:var(--primary-dark); font-family:'Space Grotesk',sans-serif;">0 kWh</div>
+              </div>
+              <div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Demand Offset Percentage</span>
+                <div id="solar-offset-pct" style="font-size:1.55rem; font-weight:700; color:var(--accent); font-family:'Space Grotesk',sans-serif;">0%</div>
+              </div>
+              <div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Annual CO₂ Avoided</span>
+                <div id="solar-co2-saved" style="font-size:1.15rem; font-weight:700; color:var(--primary);">0 kg / yr</div>
+              </div>
+              <div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Estimated Payback Period</span>
+                <div id="solar-payback" style="font-size:1.15rem; font-weight:700; color:var(--text-main);">0.0 Years</div>
+              </div>
+            </div>
+            <p style="font-size:0.84rem; color:#065f46; margin-top:0.85rem;" id="solar-roof-area">
+              Required Shadow-Free Roof Area: ~50 m² (10 m²/kWp) • Equivalent to 0 mature trees planted.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:0.35rem;">Monthly Grid Import vs. Solar Offset</h3>
+          <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1rem;">Comparison of baseline grid demand against net grid energy required after solar PV generation.</p>
+          <div class="chart-box">
+            <canvas id="solarChart"></canvas>
+          </div>
+          <div class="formula-box" style="margin-top:1.25rem;">
+            <strong>Solar Yield Equation:</strong><br>
+            E<sub>solar</sub> = P<sub>rated</sub> (kWp) × PSH (hrs/day) × PR × 30 &nbsp;[kWh/month]<br>
+            CO₂ Saved = E<sub>solar</sub> × 0.82 &nbsp;[kg CO₂/month]
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         TAB 5: ENGINEERING FORMULAS, DOCUMENTATION & VIVA PREP
+         ========================================================= -->
+    <section id="tab-docs" class="tab-section">
+      <div class="card" style="margin-bottom:1.5rem;">
+        <h2><i class="fa-solid fa-graduation-cap" style="color:var(--primary);"></i> BTech 2nd Year Engineering Documentation &amp; Viva Guide</h2>
+        <p style="color:var(--text-muted);">Complete mathematical reference, project abstract, system assumptions, and professor viva Q&amp;A for your evaluation.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-bottom:1rem;">1. Core Electrical Engineering Formulas</h3>
+          
+          <p><strong>A. Active Energy Consumption (kWh):</strong></p>
+          <div class="formula-box">E = (P<sub>watts</sub> × Quantity × Hours × 30) / 1000 &nbsp;[kWh/month]</div>
+
+          <p><strong>B. Apparent Power (kVA) &amp; Power Factor:</strong></p>
+          <div class="formula-box">S (kVA) = P (kW) / cos φ &nbsp;&nbsp;|&nbsp;&nbsp; Q (kVAR) = √(S² − P²)</div>
+
+          <p><strong>C. Shunt Capacitor Bank Sizing:</strong></p>
+          <div class="formula-box">Q<sub>c</sub> = P × [tan(cos⁻¹ φ₁) − tan(cos⁻¹ φ₂)] &nbsp;[kVAR]</div>
+
+          <p><strong>D. Copper Loss Reduction Factor:</strong></p>
+          <div class="formula-box">% Loss Reduction = [1 − (cos φ₁ / cos φ₂)²] × 100%</div>
+
+          <p><strong>E. Carbon Footprint Offset (CEA India Baseline):</strong></p>
+          <div class="formula-box">CO₂ (kg) = Energy Saved (kWh) × 0.82 kg CO₂/kWh</div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:1rem;">2. Project Abstract &amp; Scope</h3>
+          <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.85rem;">
+            <strong>Abstract:</strong> Rising electricity demand in academic campuses and residential buildings contributes significantly to peak grid stress and carbon emissions. <em>EcoWatt</em> is a browser-based Electrical Engineering decision-support tool that eliminates expensive IoT sensor barriers by providing deterministic load auditing, reactive power capacitor bank sizing, and rooftop solar PV offset simulation.
+          </p>
+          <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.85rem;">
+            <strong>Honest Limitations (Simulated vs. Measured Data):</strong> This software uses user-entered nameplate ratings and standard solar irradiance averages rather than real-time CT/PT hardware telemetry. Therefore, results serve as pre-installation engineering feasibility estimates.
+          </p>
+          <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0;">
+            <strong>Future Scope:</strong> Integration with ESP32 + PZEM-004T energy meters via MQTT/REST APIs for live telemetry and automated relay switching of capacitor banks (APFC panel).
+          </p>
+        </div>
+      </div>
+
+      <!-- Viva Questions Accordion -->
+      <div class="card">
+        <h3 style="margin-bottom:1rem;"><i class="fa-solid fa-comments" style="color:var(--primary);"></i> Top Viva Questions &amp; Model Answers</h3>
+
+        <details open>
+          <summary>Q1. Why did you choose a software/web-based project instead of a hardware prototype?</summary>
+          <p>Before installing physical solar panels or Automatic Power Factor Correction (APFC) capacitor banks, electrical engineers must conduct an energy audit and sizing feasibility study. A web-based simulator allows campuses and households to model savings, size components accurately, and identify phantom loads at zero hardware cost.</p>
+        </details>
+
+        <details>
+          <summary>Q2. How does improving Power Factor save energy if capacitors don't reduce active power (kW) of the appliance?</summary>
+          <p>While an induction motor still consumes the same active power (P = V·I·cos φ), improving cos φ reduces the total line current (I = P / (V·cos φ)) drawn from the transformer and distribution cables. Lower current directly reduces transmission/distribution copper losses (I²R losses), improves voltage regulation, and eliminates utility kVAh/PF penalties.</p>
+        </details>
+
+        <details>
+          <summary>Q3. How does your project directly contribute to UN Sustainable Development Goals (SDGs)?</summary>
+          <p>It directly supports <strong>SDG 7 (Affordable and Clean Energy)</strong> by facilitating rooftop solar PV sizing and improving end-use energy efficiency (Target 7.3), and <strong>SDG 13 (Climate Action)</strong> by quantifying CO₂ emission reductions using grid emission factors (0.82 kg CO₂/kWh).</p>
+        </details>
+
+        <details>
+          <summary>Q4. What is Performance Ratio (PR) in your Solar PV formula?</summary>
+          <p>Performance Ratio (typically 0.75–0.85) accounts for real-world losses between DC panel nameplate output and usable AC output—including inverter efficiency (~96%), high cell temperature derating, dust/soiling, and DC/AC cable losses.</p>
+        </details>
+
+        <details>
+          <summary>Q5. How is data stored in this web application without a backend server?</summary>
+          <p>The application uses the browser's <code>localStorage</code> API to persist custom appliance inventories and tariff settings locally, ensuring fast offline execution during demonstrations without paid cloud databases or APIs.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // =========================================================
+    // STATE MANAGEMENT & REALISTIC PRESETS
+    // =========================================================
+    const PRESETS = {
+      campus: [
+        { id: 1, name: "3-Phase Induction Motor Bench", category: "Motors & Lab", watts: 2200, qty: 2, hours: 4, pf: 0.76 },
+        { id: 2, name: "Split Air Conditioner (1.5T)", category: "HVAC & Cooling", watts: 1600, qty: 3, hours: 7, pf: 0.84 },
+        { id: 3, name: "Desktop Workstations & Monitors", category: "IT & Computing", watts: 220, qty: 15, hours: 8, pf: 0.92 },
+        { id: 4, name: "LED Tube Panels (40W)", category: "Lighting", watts: 40, qty: 24, hours: 9, pf: 0.95 },
+        { id: 5, name: "Oscilloscopes & Function Gens", category: "Motors & Lab", watts: 120, qty: 8, hours: 5, pf: 0.85 },
+        { id: 6, name: "Standby Routers & Water Cooler", category: "Standby / Misc", watts: 180, qty: 2, hours: 24, pf: 0.80 }
+      ],
+      home: [
+        { id: 1, name: "Inverter Split AC (1.5T)", category: "HVAC & Cooling", watts: 1450, qty: 1, hours: 8, pf: 0.90 },
+        { id: 2, name: "Refrigerator (260L)", category: "HVAC & Cooling", watts: 180, qty: 1, hours: 14, pf: 0.82 },
+        { id: 3, name: "Ceiling Fans (BLDC/Induction)", category: "HVAC & Cooling", watts: 75, qty: 4, hours: 12, pf: 0.78 },
+        { id: 4, name: "LED Bulbs & Battens", category: "Lighting", watts: 20, qty: 10, hours: 6, pf: 0.95 },
+        { id: 5, name: "Water Pump (0.5 HP)", category: "Motors & Lab", watts: 375, qty: 1, hours: 1.5, pf: 0.75 },
+        { id: 6, name: "Wi-Fi Router, TV & Chargers", category: "Standby / Misc", watts: 95, qty: 1, hours: 24, pf: 0.85 }
+      ]
+    };
+
+    let appliances = JSON.parse(localStorage.getItem('ecowatt_appliances')) || [...PRESETS.campus];
+    let categoryChartInstance = null;
+    let hourlyChartInstance = null;
+    let pfChartInstance = null;
+    let solarChartInstance = null;
+
+    // =========================================================
+    // NAVIGATION CONTROLLER
+    // =========================================================
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById('tab-' + tabId).classList.add('active');
+      const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Re-render charts on tab switch so canvas dimensions calculate cleanly
+      recalculateAll();
+    }
+
+    function loadPreset(type) {
+      appliances = PRESETS[type].map(item => ({ ...item }));
+      saveState();
+      recalculateAll();
+    }
+
+    function saveState() {
+      localStorage.setItem('ecowatt_appliances', JSON.stringify(appliances));
+    }
+
+    // =========================================================
+    // APPLIANCE CRUD OPERATIONS
+    // =========================================================
+    function addAppliance(e) {
+      e.preventDefault();
+      const name = document.getElementById('app-name').value.trim();
+      const category = document.getElementById('app-category').value;
+      const watts = parseFloat(document.getElementById('app-watts').value);
+      const qty = parseInt(document.getElementById('app-qty').value, 10);
+      const hours = parseFloat(document.getElementById('app-hours').value);
+      const pf = parseFloat(document.getElementById('app-pf').value);
+
+      if (!name || watts <= 0 || qty <= 0 || hours <= 0 || pf <= 0 || pf > 1) return;
+
+      appliances.push({
+        id: Date.now(),
+        name,
+        category,
+        watts,
+        qty,
+        hours,
+        pf
+      });
+
+      saveState();
+      document.getElementById('add-load-form').reset();
+      document.getElementById('app-qty').value = 1;
+      document.getElementById('app-hours').value = 6;
+      document.getElementById('app-pf').value = 0.85;
+      recalculateAll();
+    }
+
+    function deleteAppliance(id) {
+      appliances = appliances.filter(item => item.id !== id);
+      saveState();
+      recalculateAll();
+    }
+
+    // =========================================================
+    // CORE ELECTRICAL CALCULATIONS & DASHBOARD RENDERING
+    // =========================================================
+    function recalculateAll() {
+      const tariff = parseFloat(document.getElementById('tariff-input').value) || 7.5;
+      const emissionFactor = 0.82; // kg CO2 per kWh (CEA India grid average)
+
+      let totalConnectedKW = 0;
+      let totalConnectedKVA = 0;
+      let totalMonthlyKWh = 0;
+      let weightedPFSum = 0;
+
+      const categoryTotals = {
+        "HVAC & Cooling": 0,
+        "Motors & Lab": 0,
+        "Lighting": 0,
+        "IT & Computing": 0,
+        "Standby / Misc": 0
+      };
+
+      const tbody = document.getElementById('appliance-tbody');
+      tbody.innerHTML = '';
+
+      appliances.forEach(item => {
+        const kw = (item.watts * item.qty) / 1000;
+        const kva = kw / item.pf;
+        const monthlyKWh = kw * item.hours * 30;
+        const monthlyCost = monthlyKWh * tariff;
+
+        totalConnectedKW += kw;
+        totalConnectedKVA += kva;
+        totalMonthlyKWh += monthlyKWh;
+        weightedPFSum += kw * item.pf;
+
+        if (categoryTotals[item.category] !== undefined) {
+          categoryTotals[item.category] += monthlyKWh;
+        } else {
+          categoryTotals["Standby / Misc"] += monthlyKWh;
+        }
+
+        const pfClass = item.pf >= 0.90 ? 'badge-good' : (item.pf >= 0.80 ? 'badge-warn' : 'badge-bad');
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${item.name}</strong><br><span style="font-size:0.78rem; color:var(--text-muted);">${item.category}</span></td>
+          <td>${item.qty} × ${item.watts}W</td>
+          <td>${item.hours} h</td>
+          <td><span class="badge ${pfClass}">${item.pf.toFixed(2)}</span></td>
+          <td><strong>${monthlyKWh.toFixed(1)}</strong></td>
+          <td>₹${Math.round(monthlyCost).toLocaleString('en-IN')}</td>
+          <td><button class="del-btn" title="Remove load" onclick="deleteAppliance(${item.id})"><i class="fa-solid fa-trash"></i></button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      const avgPF = totalConnectedKW > 0 ? (weightedPFSum / totalConnectedKW) : 0.90;
+      const dailyKWh = totalMonthlyKWh / 30;
+      const totalBill = totalMonthlyKWh * tariff;
+      const totalCO2 = totalMonthlyKWh * emissionFactor;
+
+      // Update KPI Cards
+      document.getElementById('kpi-kw').textContent = `${totalConnectedKW.toFixed(2)} kW`;
+      document.getElementById('kpi-kva').textContent = `Apparent Power: ${totalConnectedKVA.toFixed(2)} kVA`;
+      document.getElementById('kpi-kwh').textContent = `${Math.round(totalMonthlyKWh).toLocaleString('en-IN')} kWh`;
+      document.getElementById('kpi-daily').textContent = `Daily Avg: ${dailyKWh.toFixed(1)} kWh/day`;
+      document.getElementById('kpi-cost').textContent = `₹${Math.round(totalBill).toLocaleString('en-IN')}`;
+      document.getElementById('kpi-tariff-label').textContent = `At ₹${tariff.toFixed(2)} / kWh tariff`;
+      document.getElementById('kpi-co2').textContent = `${Math.round(totalCO2).toLocaleString('en-IN')} kg`;
+      document.getElementById('kpi-pf-avg').textContent = `Weighted Avg PF: ${avgPF.toFixed(2)}`;
+
+      // Sync connected load into PF calculator automatically if user hasn't manually overridden
+      const pfKwInput = document.getElementById('pf-kw-input');
+      if (totalConnectedKW > 0) {
+        pfKwInput.value = totalConnectedKW.toFixed(2);
+      }
+
+      generateRecommendations(appliances, avgPF, totalMonthlyKWh, tariff);
+      renderCategoryChart(categoryTotals);
+      renderHourlyChart(totalConnectedKW);
+      calculatePF();
+      calculateSolar(totalMonthlyKWh, tariff);
+    }
+
+    // =========================================================
+    // SMART ENGINEERING RECOMMENDATIONS ENGINE
+    // =========================================================
+    function generateRecommendations(items, avgPF, totalMonthlyKWh, tariff) {
+      const container = document.getElementById('recommendations-list');
+      container.innerHTML = '';
+      const recs = [];
+
+      if (avgPF < 0.88) {
+        recs.push({
+          icon: 'fa-wave-square',
+          title: `Low System Power Factor (${avgPF.toFixed(2)}) Detected`,
+          text: `Install a shunt capacitor bank (see PF tab) to raise PF to 0.98. This reduces feeder current and cuts I²R line losses by ~${((1 - Math.pow(avgPF / 0.98, 2)) * 100).toFixed(1)}%.`
+        });
+      }
+
+      const continuousLoads = items.filter(i => i.hours >= 20);
+      if (continuousLoads.length > 0) {
+        const phantomKwh = continuousLoads.reduce((acc, i) => acc + ((i.watts * i.qty) / 1000) * i.hours * 30, 0);
+        recs.push({
+          icon: 'fa-power-off',
+          title: `24/7 Continuous & Standby Load Alert (${phantomKwh.toFixed(0)} kWh/mo)`,
+          text: `Use smart timer plugs on "${continuousLoads[0].name}" during off-hours (10 PM – 6 AM) to save ~30% standby energy (₹${Math.round(phantomKwh * 0.3 * tariff)}/mo).`
+        });
+      }
+
+      const hvacLoads = items.filter(i => i.category === "HVAC & Cooling");
+      if (hvacLoads.length > 0) {
+        recs.push({
+          icon: 'fa-temperature-half',
+          title: `HVAC Thermostat Setpoint Optimization`,
+          text: `Raising AC thermostat setpoints from 20°C to 24°C reduces compressor duty cycle by ~18–24% without sacrificing thermal comfort.`
+        });
+      }
+
+      recs.push({
+        icon: 'fa-solar-panel',
+        title: `Recommended Rooftop Solar Size: ${Math.max(1, (totalMonthlyKWh / 125)).toFixed(1)} kWp`,
+        text: `Based on ${Math.round(totalMonthlyKWh)} kWh/month demand, a ${Math.max(1, (totalMonthlyKWh / 125)).toFixed(1)} kWp grid-tied PV system can offset ~85–100% of daytime grid consumption.`
+      });
+
+      recs.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'rec-item';
+        div.innerHTML = `
+          <i class="fa-solid ${r.icon}"></i>
+          <div>
+            <strong style="display:block; color:var(--text-main); margin-bottom:0.2rem;">${r.title}</strong>
+            <span style="font-size:0.88rem; color:var(--text-muted);">${r.text}</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // =========================================================
+    // POWER FACTOR & CAPACITOR SIZING MODULE
+    // =========================================================
+    function calculatePF() {
+      const P = parseFloat(document.getElementById('pf-kw-input').value) || 10;
+      let pf1 = parseFloat(document.getElementById('pf1-slider').value);
+      let pf2 = parseFloat(document.getElementById('pf2-slider').value);
+
+      if (pf2 < pf1) {
+        pf2 = pf1;
+        document.getElementById('pf2-slider').value = pf2;
+      }
+
+      document.getElementById('pf1-display').textContent = pf1.toFixed(2);
+      document.getElementById('pf2-display').textContent = pf2.toFixed(2);
+
+      const V = parseFloat(document.getElementById('sys-voltage').value);
+      const f = parseFloat(document.getElementById('sys-freq').value);
+
+      const phi1 = Math.acos(pf1);
+      const phi2 = Math.acos(pf2);
+
+      const Q1 = P * Math.tan(phi1);
+      const Q2 = P * Math.tan(phi2);
+      const Qc = Math.max(0, Q1 - Q2); // Required kVAR
+
+      const S1 = P / pf1;
+      const S2 = P / pf2;
+      const kvaSaved = Math.max(0, S1 - S2);
+
+      // Capacitance in microfarads: C = (Qc * 10^9) / (2 * pi * f * V^2)
+      const capUF = (Qc * 1e9) / (2 * Math.PI * f * V * V);
+      const lossDropPct = (1 - Math.pow(pf1 / pf2, 2)) * 100;
+
+      document.getElementById('res-kvar').textContent = `${Qc.toFixed(2)} kVAR`;
+      document.getElementById('res-uf').textContent = `${capUF.toFixed(1)} µF`;
+      document.getElementById('res-kva-saved').textContent = `${kvaSaved.toFixed(2)} kVA saved`;
+      document.getElementById('res-loss-drop').textContent = `${lossDropPct.toFixed(1)}% lower I²R loss`;
+
+      renderPFChart(P, Q1, S1, Q2, S2);
+    }
+
+    // =========================================================
+    // SOLAR PV & CARBON OFFSET MODULE
+    // =========================================================
+    function calculateSolar(passedMonthlyKWh, passedTariff) {
+      const tariff = passedTariff || parseFloat(document.getElementById('tariff-input').value) || 7.5;
+      const totalMonthlyKWh = passedMonthlyKWh !== undefined
+        ? passedMonthlyKWh
+        : appliances.reduce((sum, i) => sum + ((i.watts * i.qty) / 1000) * i.hours * 30, 0);
+
+      const solarKWp = parseFloat(document.getElementById('solar-kw-slider').value);
+      const psh = parseFloat(document.getElementById('solar-psh-slider').value);
+      const pr = parseFloat(document.getElementById('solar-pr-slider').value);
+
+      document.getElementById('solar-kw-display').textContent = `${solarKWp.toFixed(1)} kWp`;
+      document.getElementById('solar-psh-display').textContent = `${psh.toFixed(1)} hrs/day`;
+      document.getElementById('solar-pr-display').textContent = `${Math.round(pr * 100)}%`;
+
+      const monthlySolarKWh = solarKWp * psh * pr * 30;
+      const offsetPct = totalMonthlyKWh > 0 ? Math.min(100, (monthlySolarKWh / totalMonthlyKWh) * 100) : 0;
+      const annualCO2Saved = monthlySolarKWh * 12 * 0.82;
+      const treesEquivalent = Math.round(annualCO2Saved / 21.7);
+
+      // Approx ₹52,000 per kWp installed cost in India
+      const systemCost = solarKWp * 52000;
+      const annualSavings = monthlySolarKWh * 12 * tariff;
+      const paybackYears = annualSavings > 0 ? (systemCost / annualSavings) : 0;
+
+      document.getElementById('solar-monthly-kwh').textContent = `${Math.round(monthlySolarKWh).toLocaleString('en-IN')} kWh`;
+      document.getElementById('solar-offset-pct').textContent = `${offsetPct.toFixed(1)}%`;
+      document.getElementById('solar-co2-saved').textContent = `${Math.round(annualCO2Saved).toLocaleString('en-IN')} kg / yr`;
+      document.getElementById('solar-payback').textContent = `${paybackYears.toFixed(1)} Years`;
+      document.getElementById('solar-roof-area').textContent =
+        `Required Shadow-Free Roof Area: ~${Math.round(solarKWp * 10)} m² (10 m²/kWp) • Equivalent to ${treesEquivalent} mature trees planted annually.`;
+
+      renderSolarChart(totalMonthlyKWh, monthlySolarKWh);
+      renderHourlyChart(appliances.reduce((sum, i) => sum + (i.watts * i.qty) / 1000, 0), solarKWp * pr);
+    }
+
+    // =========================================================
+    // CHART.JS VISUALIZATIONS
+    // =========================================================
+    function renderCategoryChart(categoryTotals) {
+      const ctx = document.getElementById('categoryChart');
+      if (!ctx) return;
+      if (categoryChartInstance) categoryChartInstance.destroy();
+
+      categoryChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(categoryTotals),
+          datasets: [{
+            data: Object.values(categoryTotals).map(v => Number(v.toFixed(1))),
+            backgroundColor: ['#059669', '#0284c7', '#d97706', '#7c3aed', '#64748b'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right' }
+          }
+        }
+      });
+    }
+
+    function renderHourlyChart(connectedKW, effectiveSolarKW = 4.0) {
+      const ctx = document.getElementById('hourlyChart');
+      if (!ctx) return;
+      if (hourlyChartInstance) hourlyChartInstance.destroy();
+
+      const hours = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
+      // Normalized diurnal load factors
+      const loadFactors = [0.22, 0.20, 0.35, 0.78, 0.92, 0.85, 0.65, 0.40];
+      // Bell-shaped solar irradiance curve
+      const solarFactors = [0, 0, 0.08, 0.55, 0.95, 0.72, 0.12, 0];
+
+      const loadCurve = loadFactors.map(f => Number((connectedKW * f).toFixed(2)));
+      const solarCurve = solarFactors.map(f => Number((effectiveSolarKW * f).toFixed(2)));
+
+      hourlyChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: hours,
+          datasets: [
+            {
+              label: 'Building Demand (kW)',
+              data: loadCurve,
+              borderColor: '#0f172a',
+              backgroundColor: 'rgba(15, 23, 42, 0.08)',
+              fill: true,
+              tension: 0.35
+            },
+            {
+              label: 'Rooftop Solar PV (kW)',
+              data: solarCurve,
+              borderColor: '#059669',
+              backgroundColor: 'rgba(5, 150, 105, 0.18)',
+              fill: true,
+              tension: 0.35
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: 'Power (kW)' } }
+          }
+        }
+      });
+    }
+
+    function renderPFChart(P, Q1, S1, Q2, S2) {
+      const ctx = document.getElementById('pfChart');
+      if (!ctx) return;
+      if (pfChartInstance) pfChartInstance.destroy();
+
+      pfChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Active Power P (kW)', 'Reactive Power Q (kVAR)', 'Apparent Power S (kVA)'],
+          datasets: [
+            {
+              label: 'Before Capacitor Bank',
+              data: [Number(P.toFixed(2)), Number(Q1.toFixed(2)), Number(S1.toFixed(2))],
+              backgroundColor: '#d97706',
+              borderRadius: 6
+            },
+            {
+              label: 'After Capacitor Bank',
+              data: [Number(P.toFixed(2)), Number(Q2.toFixed(2)), Number(S2.toFixed(2))],
+              backgroundColor: '#059669',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function renderSolarChart(demandKWh, solarKWh) {
+      const ctx = document.getElementById('solarChart');
+      if (!ctx) return;
+      if (solarChartInstance) solarChartInstance.destroy();
+
+      const netGrid = Math.max(0, demandKWh - solarKWh);
+      const exported = Math.max(0, solarKWh - demandKWh);
+
+      solarChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Baseline Grid Demand', 'Net Grid Import (Post-Solar)', 'Solar Offset / Export'],
+          datasets: [{
+            label: 'Monthly Energy (kWh)',
+            data: [
+              Math.round(demandKWh),
+              Math.round(netGrid),
+              Math.round(Math.min(demandKWh, solarKWh) + exported)
+            ],
+            backgroundColor: ['#64748b', '#d97706', '#059669'],
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: 'kWh / Month' } }
+          }
+        }
+      });
+    }
+
+    // =========================================================
+    // CSV EXPORT FOR LAB REPORT / DEMO
+    // =========================================================
+    function exportCSV() {
+      const tariff = parseFloat(document.getElementById('tariff-input').value) || 7.5;
+      let csv = "Appliance,Category,Watts,Quantity,HoursPerDay,PowerFactor,Monthly_kWh,Monthly_Cost_INR\n";
+      appliances.forEach(i => {
+        const kwh = ((i.watts * i.qty) / 1000) * i.hours * 30;
+        const cost = kwh * tariff;
+        csv += `"${i.name}","${i.category}",${i.watts},${i.qty},${i.hours},${i.pf},${kwh.toFixed(2)},${cost.toFixed(2)}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'EcoWatt_Energy_Audit_Report.csv';
+      link.click();
+    }
+
+    // Initialize App on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      recalculateAll();
+    });
+  </script>
+</body>
+</html>
